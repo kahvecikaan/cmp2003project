@@ -5,13 +5,15 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
+#include <unordered_map>
+
 using namespace std;
 
 typedef long long ll;
 
-map<ll,ll> userratingcount;
+unordered_map<ll,ll> userratingcount, movieratingcount;
 
-vector<pair<ll,ll>> output;
+vector<pair<ll,ll>> useroutput,movieoutput;
 
 int main(){
     ifstream infile;
@@ -28,17 +30,25 @@ int main(){
         double rating;
         istringstream(s) >> userid >> itemid >> rating;
         userratingcount[userid]++;
+        movieratingcount[itemid]++;
     }
 
     for(auto i : userratingcount){
-        cout << i.first << ' ' << i.second << endl;
-        output.push_back({i.second,i.first});
+        //cout << i.first << ' ' << i.second << endl;
+        useroutput.push_back({i.second,i.first});
     }
-
-    sort(output.rbegin(), output.rend());
+    for(auto i : movieratingcount){
+        movieoutput.push_back({i.second,i.first});
+    }
     
-    for(int i = 0;i<min(10,(int)output.size());i++){
-        cout << output[i].second << ' ' << output[i].first << endl;
-    }
+    sort(useroutput.rbegin(), useroutput.rend());
+    sort(movieoutput.rbegin(),movieoutput.rend());
 
+    for(int i = 0;i<min(10,(int)useroutput.size());i++){
+        cout << useroutput[i].second << ' ' << useroutput[i].first << endl;
+    }
+    cout << endl;
+    for(int i = 0;i<min(10,(int)movieoutput.size());i++){
+        cout << movieoutput[i].second << ' ' << movieoutput[i].first << endl;
+    }
 }
