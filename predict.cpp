@@ -2,6 +2,7 @@
 #include <set>
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 using namespace std;
 typedef long long ll;
@@ -30,7 +31,6 @@ void findsamemovies(vector<int>& samemovies, int unknownid, int knownid){
 
 double cossim(int unknownid,int movieid){
     set<pair<double,int>> cossims;
-
     for(int user : users){
        // cerr << "SD" << user << endl;
         if(user == unknownid)
@@ -55,9 +55,9 @@ double cossim(int unknownid,int movieid){
     }
     double ret = 0;
     int i=0; 
-    for(auto it=cossims.rbegin();i<10&&it!=cossims.rend();i++,it++){
+    for(auto it=cossims.rbegin();i<100&&it!=cossims.rend();i++,it++){
         ret += rates[it->second][movieid];
     }
-    ret /= min(10,(int)cossims.size());
+    ret /= min(100,(int)cossims.size());
     return ret;
 }
