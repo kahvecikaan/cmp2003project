@@ -16,8 +16,8 @@ using namespace std;
 
 typedef long long ll;
 
-#define TRAIN_FILE "./trainfromtrain.csv" 
-#define TEST_FILE "./testfromtrain.csv"
+#define TRAIN_FILE "./train.csv" 
+#define TEST_FILE "./test.csv"
 
 int main(){
     ios_base::sync_with_stdio(false);cin.tie(nullptr);
@@ -40,10 +40,17 @@ int main(){
 
     int n = 0;
     double rmse = 0;
-    while(fscanf(testfile, "%lld,%lld,%lf",&userid,&itemid,&rating)!=EOF){
+
+    FILE* submission = fopen("./submission.csv","w");
+
+    int id;
+    fprintf(submission,"ID,Predicted\n");
+    fscanf(testfile,"%s",asd);
+    while(fscanf(testfile, "%d,%lld,%lld",&id,&userid,&itemid)!=EOF){
         double foundrate = cossim(userid,itemid);
         n++;
         rmse += (foundrate - rating) * (foundrate - rating);
+        fprintf(submission,"%d,%lf\n",id,foundrate);
         if(n/100 - (n-1)/100 != 0)
             cerr << n << endl;
     }
@@ -52,6 +59,7 @@ int main(){
     rmse = sqrt(rmse);
 
     cout << "RMSE: " << rmse << endl;
-    
+     
     fclose(testfile);
 }
+
