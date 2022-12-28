@@ -56,13 +56,15 @@ double cossim(int unknownid,int movieid){
     }
     double ust = 0, alt = 0;
     int i=0; 
-    for(auto it=cossims.rbegin();i<100&&it!=cossims.rend();i++,it++){
-        if(isnan(it->first))
+    for(auto it=cossims.rbegin();it!=cossims.rend();i++,it++){
+        double w = it->first;
+        int u = it->second;
+        if(isnan(w))
             continue;
-        if(isnan(rates[it->second][movieid]))
+        if(isnan(rates[u][movieid]))
             cerr << "BBBBBBBB" << endl;
-        ust += rates[it->second][movieid] * it->first;
-        alt += it->first;
+        ust += rates[it->second][movieid] * w * w;
+        alt += w * w;
         //cerr << alt << endl;
     }
     //ret /= min(100,(int)cossims.size());
