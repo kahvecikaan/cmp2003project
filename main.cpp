@@ -16,8 +16,12 @@ using namespace std;
 
 typedef long long ll;
 
+#ifndef TRAIN_FILE
 #define TRAIN_FILE "./train.csv" 
+#endif
+#ifndef TEST_FILE
 #define TEST_FILE "./test.csv"
+#endif
 
 int main(){
     ios_base::sync_with_stdio(false);cin.tie(nullptr);
