@@ -52,7 +52,7 @@ int main(){
     fprintf(submission,"ID,Predicted\n");
     fscanf(testfile,"%s",asd);
     while(fscanf(testfile, "%d,%lld,%lld",&id,&userid,&itemid)!=EOF){
-        double foundrate = pearsonsimpredict(userid,itemid);
+        double foundrate = cossim(userid,itemid);
         n++;
         rmse += (foundrate - rating) * (foundrate - rating);
         fprintf(submission,"%d,%lf\n",id,foundrate);

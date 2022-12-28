@@ -37,10 +37,11 @@ double cossim(int unknownid,int movieid){
             continue;
         if(usertomovies[user].find(movieid) == usertomovies[user].end())
             continue;
-        
+         
         vector<int> samemovies;
         findsamemovies(samemovies,unknownid,user);
-        
+        if(samemovies.size() == 0)
+            continue;
         double upside = 0;
         double adownside=0,bdownside = 0;
 
