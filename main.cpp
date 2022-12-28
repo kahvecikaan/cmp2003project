@@ -45,6 +45,7 @@ int main(){
     int n = 0;
     double rmse = 0;
 
+#ifdef SUBMISSION
     FILE* submission = fopen("./submission.csv","w");
 
     int id;
@@ -65,5 +66,27 @@ int main(){
     cout << "RMSE: " << rmse << endl;
      
     fclose(testfile);
+#endif
+#ifdef TEST
+    FILE* submission = fopen("./submission.csv","w");
+
+    fprintf(submission,"ID,Predicted\n");
+    fscanf(testfile,"%s",asd);
+    while(fscanf(testfile, "%lld,%lld,%lf",&userid,&itemid,&rating)!=EOF){
+        double foundrate = cossim(userid,itemid);
+        n++;
+        rmse += (foundrate - rating) * (foundrate - rating);
+        fprintf(submission,"%d,%lf\n",n-1,foundrate);
+        if(n/100 - (n-1)/100 != 0)
+            cerr << n << endl;
+    }
+    cerr << n << endl;
+    rmse /= n;
+    rmse = sqrt(rmse);
+
+    cout << "RMSE: " << rmse << endl;
+     
+    fclose(testfile);
+#endif
 }
 

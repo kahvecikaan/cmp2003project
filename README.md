@@ -8,6 +8,6 @@ Use 40p.cpp
 ## Second task
 
 ```
-g++ -O2 -o a -std=c++17 -Wall -Wextra -Wshadow -DTRAIN_FILE="\"./train.csv\"" -DTEST_FILE="\"./test.csv\"" main.cpp predict.cpp
+g++ -O2 -o a -std=c++17 -Wall -Wextra -Wshadow  main.cpp predict.cpp -DTRAIN_FILE="\"./train.csv\"" -DTEST_FILE="\"./test.csv\""
 ./a
 ```

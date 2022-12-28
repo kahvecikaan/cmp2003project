@@ -53,13 +53,31 @@ double cossim(int unknownid,int movieid){
         }
         cossims.emplace(upside/(sqrt(adownside) * sqrt(bdownside)),user);
     }
-    double ret = 0;
+    double ust = 0, alt = 0;
     int i=0; 
     for(auto it=cossims.rbegin();i<100&&it!=cossims.rend();i++,it++){
-        ret += rates[it->second][movieid];
+        if(isnan(it->first))
+            continue;
+        if(isnan(rates[it->second][movieid]))
+            cerr << "BBBBBBBB" << endl;
+        ust += rates[it->second][movieid] * it->first;
+        alt += it->first;
+        //cerr << alt << endl;
     }
-    ret /= min(100,(int)cossims.size());
-    return ret;
+    //ret /= min(100,(int)cossims.size());
+    //return ret;
+    if(isnan(ust/alt))
+        cerr << ust << ' ' << alt << ' '  << "AAAAAAAA" << endl;
+
+    if(ust == 0){
+        double ret = 0;
+        for(auto asda : rates[unknownid]){
+            ret += asda.second;
+        }
+        return ret/rates[unknownid].size();
+    }
+
+    return ust/alt;
 }
 
 double pearsonsimpredict(int unknownid, int movieid){
