@@ -61,3 +61,76 @@ double cossim(int unknownid,int movieid){
     ret /= min(100,(int)cossims.size());
     return ret;
 }
+
+double pearsonsimpredict(int unknownid, int movieid){
+    set<pair<double,int>> pearsonsims;
+    for(int user : users){
+        if(user == unknownid)
+            continue;
+        if(usertomovies[user].find(movieid) == usertomovies[user].end())
+            continue;
+        
+        vector<int> samemovies; // consider preprocessing these
+        findsamemovies(samemovies,unknownid,user);
+       
+        int n = samemovies.size();
+        
+        if(n==0)
+            continue;
+
+        double up[3] = {};
+        double down[4] = {};
+        
+        for(int movie : samemovies){
+            
+            double knrate = rates[user][movie];
+            double unrate = rates[unknownid][movie];  
+            up[0] += unrate * knrate;
+            up[1] += unrate;
+            up[2] += knrate;
+            
+            down[0] += unrate * unrate;
+            down[1] += unrate;
+            down[2] += knrate * knrate;
+            down[3] += knrate;
+            
+        }
+        up[0] *= n;
+        down[0] *= n;
+        down[1] *= down[1];
+        down[2] *= n;
+        down[3] *= down[3];
+        
+        double result = up[0] - up[1] * up[2];
+        result /= sqrt(down[0] - down[1]) * sqrt(down[2] - down[3]);
+        
+        //cerr << result << endl;
+        //if(isnan(result)){
+            //cerr << unknownid << '\t' << user << endl;
+            //for(int i : samemovies){
+                //cerr << rates[unknownid][i] << '\t' << rates[user][i] << endl;
+            //}
+            //exit(0);
+        //}
+
+        if(isnan(result))
+            continue;
+
+        pearsonsims.emplace(result,user);
+    }
+    double ust = 0;
+    double alt = 0;
+    int i=0; 
+    for(auto it=pearsonsims.rbegin();i<10&&it!=pearsonsims.rend();i++,it++){
+        double coeff = it->first;
+        int user = it->second;
+        if(coeff+1 == 0){
+            continue;
+        }
+        double a = ((coeff+1)/2. * (coeff+1)/2.) ;
+        ust += a*rates[user][movieid];
+        alt += a;
+        //cerr << coeff << ' ' << user << ' ' << a << endl;
+    }  
+    return ust/alt;
+}
