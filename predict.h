@@ -13,4 +13,6 @@ void findsamemovies(std::vector<int>& samemovies, int unknownid, int knownid);
 
 double cossim(int unknownid,int movieid);
 
+double pearsonsimpredict(int unknownid, int movieid);
+
 #endif
