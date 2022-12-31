@@ -142,7 +142,7 @@ double pearsonsimpredict(int unknownid, int movieid){
     double ust = 0;
     double alt = 0;
     int i=0; 
-    for(auto it=pearsonsims.rbegin();i<10&&it!=pearsonsims.rend();i++,it++){
+    for(auto it=pearsonsims.rbegin();/*i<10&&*/it!=pearsonsims.rend();i++,it++){
         double coeff = it->first;
         int user = it->second;
         if(coeff+1 == 0){
@@ -152,6 +152,8 @@ double pearsonsimpredict(int unknownid, int movieid){
         ust += a*rates[user][movieid];
         alt += a;
         //cerr << coeff << ' ' << user << ' ' << a << endl;
-    }  
+    } 
+    if(isnan(ust/alt))
+        cerr << ust << ' ' << alt << " AAAAAA" << endl;
     return ust/alt;
 }
