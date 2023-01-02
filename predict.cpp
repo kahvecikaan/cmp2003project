@@ -4,11 +4,15 @@
 #include <algorithm>
 #include <iostream>
 
+#include "predict.h"
+
 using namespace std;
 typedef long long ll;
 
-unordered_map<ll,set<ll>> usertomovies;
-unordered_map<ll,unordered_map<ll,double>> rates;
+const int max_users = 40000;
+
+vector<set<ll>> usertomovies(max_users);
+vector<unordered_map<ll,double>> rates(max_users);
 set<long long> users;
 
 void findsamemovies(vector<int>& samemovies, int unknownid, int knownid){
