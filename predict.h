@@ -7,9 +7,10 @@
 
 extern const int max_users;
 
-extern std::vector<std::set<long long>> usertomovies;
-extern std::vector<std::unordered_map<long long,double>> rates;
-extern std::set<long long> users;
+extern std::vector<std::vector<int>> usertomovies;
+extern std::vector<std::unordered_map<int,double>> rates;
+extern std::vector<std::unordered_map<int,std::vector<int>>> samemovies;
+extern std::set<int> users;
 
 void findsamemovies(std::vector<int>& samemovies, int unknownid, int knownid);
 

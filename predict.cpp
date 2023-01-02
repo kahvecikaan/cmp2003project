@@ -11,19 +11,20 @@ typedef long long ll;
 
 const int max_users = 40000;
 
-vector<set<ll>> usertomovies(max_users);
-vector<unordered_map<ll,double>> rates(max_users);
-set<long long> users;
+vector<vector<int>> usertomovies(max_users);
+vector<unordered_map<int,double>> rates(max_users);
+vector<unordered_map<int,vector<int>>> samemovies(max_users);
+set<int> users;
 
-void findsamemovies(vector<int>& samemovies, int unknownid, int knownid){
-    set<ll>& unknownmovies = usertomovies[unknownid];
-    set<ll>& knownmovies = usertomovies[knownid];
+void findsamemovies(vector<int>& _samemovies, int unknownid, int knownid){
+    vector<int>& unknownmovies = usertomovies[unknownid];
+    vector<int>& knownmovies = usertomovies[knownid];
 
-    set<ll>::iterator unkit = unknownmovies.begin();
-    set<ll>::iterator knit = knownmovies.begin();
+    vector<int>::iterator unkit = unknownmovies.begin();
+    vector<int>::iterator knit = knownmovies.begin();
     while(unkit != unknownmovies.end() && knit != knownmovies.end()){
         if(*unkit == *knit){
-            samemovies.push_back(*unkit);
+            _samemovies.push_back(*unkit);
             ++unkit;
         }
         else if(*unkit < *knit)
@@ -39,17 +40,17 @@ double cossim(int unknownid,int movieid){
        // cerr << "SD" << user << endl;
         if(user == unknownid)
             continue;
-        if(usertomovies[user].find(movieid) == usertomovies[user].end())
+        if(!binary_search(usertomovies[user].begin(),usertomovies[user].end(),movieid))
             continue;
          
-        vector<int> samemovies;
-        findsamemovies(samemovies,unknownid,user);
-        if(samemovies.size() == 0)
+        //vector<int> samemovies;
+        //findsamemovies(samemovies,unknownid,user);
+        if(samemovies[unknownid][user].size() < 3) // pass same movie amount lower than 5
             continue;
         double upside = 0;
         double adownside=0,bdownside = 0;
 
-        for(int movie : samemovies){
+        for(int movie : samemovies[unknownid][user]){
             double knrate = rates[user][movie];
             double unrate = rates[unknownid][movie];
             upside += knrate * unrate; 
@@ -67,8 +68,8 @@ double cossim(int unknownid,int movieid){
             continue;
         if(isnan(rates[u][movieid]))
             cerr << "BBBBBBBB" << endl;
-        ust += rates[it->second][movieid] * w * w;
-        alt += w * w;
+        ust += rates[it->second][movieid] * w;
+        alt += w;
         //cerr << alt << endl;
     }
     //ret /= min(100,(int)cossims.size());
@@ -92,21 +93,21 @@ double pearsonsimpredict(int unknownid, int movieid){
     for(int user : users){
         if(user == unknownid)
             continue;
-        if(usertomovies[user].find(movieid) == usertomovies[user].end())
+        if(!binary_search(usertomovies[user].begin(),usertomovies[user].end(),movieid))
             continue;
         
-        vector<int> samemovies; // consider preprocessing these
-        findsamemovies(samemovies,unknownid,user);
+        vector<int> &_samemovies = samemovies[unknownid][user]; // consider preprocessing these
+        //findsamemovies(samemovies,unknownid,user);
        
-        int n = samemovies.size();
+        int n = _samemovies.size();
         
-        if(n==0)
+        if(n<5)
             continue;
 
         double up[3] = {};
         double down[4] = {};
         
-        for(int movie : samemovies){
+        for(int movie : _samemovies){
             
             double knrate = rates[user][movie];
             double unrate = rates[unknownid][movie];  
@@ -149,6 +150,8 @@ double pearsonsimpredict(int unknownid, int movieid){
     for(auto it=pearsonsims.rbegin();/*i<10&&*/it!=pearsonsims.rend();i++,it++){
         double coeff = it->first;
         int user = it->second;
+        if(coeff <= 0.3)
+            break;
         if(coeff+1 == 0){
             continue;
         }
