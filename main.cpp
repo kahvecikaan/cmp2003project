@@ -22,11 +22,14 @@ typedef long long ll;
 #ifndef TEST_FILE
 #define TEST_FILE "./test.csv"
 #endif
+#ifndef SUBMISSION_FILE
+#define SUBMISSION_FILE "./submission.csv"
+#endif
 
 #ifdef TEST
-const int testn = 10005;
+const int testn = 10000;
 #else
-const int testn = 5005;
+const int testn = 5000;
 #endif
 
 vector<pair<int,int>> testcases(testn);
@@ -43,6 +46,8 @@ int main(){
         usertomovies[userid].push_back(itemid);
         users.insert(userid);
         rates[userid][itemid] = rating;
+        movieratesum[itemid] += rating;
+        ++movieratecount[itemid];
     }
     cerr << "QQQQQ" << endl;
     fclose(trainfile);
@@ -52,13 +57,12 @@ int main(){
         auto en = usertomovies[u].end();
         sort(be,en);
     }
-cerr << "LLLLLL" << endl;
+    cerr << "LLLLLL" << endl;
     FILE* testfile = fopen(TEST_FILE,"r");
 
     int n = 0;
     double rmse = 0;
-    FILE* submission = fopen("./submission.csv","w");
-
+    FILE* submission = fopen(SUBMISSION_FILE,"w");
 
 
 #ifdef SUBMISSION
@@ -91,8 +95,24 @@ cerr << "LLLLLL" << endl;
     for(auto &t : testcases){
         userid = t.first;
         itemid = t.second;
-        double foundrate = pearsonsimpredict(userid,itemid);
-        rmse += (foundrate - rating) * (foundrate - rating);
+        double foundrate = 0;//pearsonsim(userid,itemid);
+        double cs = cossim(userid,itemid);
+        double acs = adjustedcossim(userid,itemid);
+
+        if(isnan(cs) && isnan(acs)){
+            foundrate = NAN;
+            cerr << "AAAASDAAA" << endl;
+        }
+        else if(isnan(cs)){
+            foundrate = acs;
+        }
+        else if(isnan(acs)){
+            foundrate = cs;
+        }
+        else{
+            foundrate = (acs + cs) / 2.;
+        }
+        
         fprintf(submission,"%d,%lf\n",i,foundrate);
         i++;
         if(i/100 - (i-1)/100 != 0)
@@ -105,6 +125,7 @@ cerr << "LLLLLL" << endl;
     cout << "RMSE: " << rmse << endl;
      
     fclose(testfile);
+    fclose(submission);
 #endif
 #ifdef TEST
     fprintf(submission,"ID,Predicted\n");
@@ -138,7 +159,23 @@ cerr << "LLLLLL" << endl;
     for(auto &t : testcases){
         userid = t.first;
         itemid = t.second;
-        double foundrate = pearsonsimpredict(userid,itemid);
+        double foundrate = 0;//pearsonsim(userid,itemid);
+        double cs = cossim(userid,itemid);
+        double acs = adjustedcossim(userid,itemid);
+
+        if(isnan(cs) && isnan(acs)){
+            foundrate = NAN;
+            cerr << "AAAASDAAA" << endl;
+        }
+        else if(isnan(cs)){
+            foundrate = acs;
+        }
+        else if(isnan(acs)){
+            foundrate = cs;
+        }
+        else{
+            foundrate = (acs + cs) / 2.;
+        }
         rating = trueratings[i];
         i++;
         rmse += (foundrate - rating) * (foundrate - rating);
@@ -153,6 +190,7 @@ cerr << "LLLLLL" << endl;
     cout << "RMSE: " << rmse << endl;
      
     fclose(testfile);
+    fclose(submission);
 #endif
 }
 

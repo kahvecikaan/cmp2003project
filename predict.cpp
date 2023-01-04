@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
+#include <cmath>
 
 #include "predict.h"
 
@@ -14,6 +15,8 @@ const int max_users = 40000;
 vector<vector<int>> usertomovies(max_users);
 vector<unordered_map<int,double>> rates(max_users);
 vector<unordered_map<int,vector<int>>> samemovies(max_users);
+double movieratesum[max_users];//max_movies < max_users
+int movieratecount[max_users];
 set<int> users;
 
 void findsamemovies(vector<int>& _samemovies, int unknownid, int knownid){
@@ -88,15 +91,15 @@ double cossim(int unknownid,int movieid){
     return ust/alt;
 }
 
-double pearsonsimpredict(int unknownid, int movieid){
-    set<pair<double,int>> pearsonsims;
+double adjustedcossim(int unknownid, int movieid){
+    set<pair<double,int>> adjcossims;
     for(int user : users){
         if(user == unknownid)
             continue;
         if(!binary_search(usertomovies[user].begin(),usertomovies[user].end(),movieid))
             continue;
         
-        vector<int> &_samemovies = samemovies[unknownid][user]; // consider preprocessing these
+        vector<int> &_samemovies = samemovies[unknownid][user];
         //findsamemovies(samemovies,unknownid,user);
        
         int n = _samemovies.size();
@@ -142,12 +145,12 @@ double pearsonsimpredict(int unknownid, int movieid){
         if(isnan(result))
             continue;
 
-        pearsonsims.emplace(result,user);
+        adjcossims.emplace(result,user);
     }
     double ust = 0;
     double alt = 0;
     int i=0; 
-    for(auto it=pearsonsims.rbegin();/*i<10&&*/it!=pearsonsims.rend();i++,it++){
+    for(auto it=adjcossims.rbegin();/*i<10&&*/it!=adjcossims.rend();i++,it++){
         double coeff = it->first;
         int user = it->second;
         if(coeff <= 0.3)
@@ -156,6 +159,59 @@ double pearsonsimpredict(int unknownid, int movieid){
             continue;
         }
         double a = ((coeff+1)/2. * (coeff+1)/2.) ;
+        ust += a*rates[user][movieid];
+        alt += a;
+        //cerr << coeff << ' ' << user << ' ' << a << endl;
+    } 
+    if(isnan(ust/alt))
+        cerr << ust << ' ' << alt << " AAAAAA" << endl;
+    return ust/alt;
+}
+
+double pearsonsim(int unknownid, int movieid){
+    set<pair<double,int>> pearsonsims;
+    for(int user : users){
+        if(user == unknownid)
+            continue;
+        if(!binary_search(usertomovies[user].begin(),usertomovies[user].end(),movieid))
+            continue;
+        
+        vector<int> &_samemovies = samemovies[unknownid][user];
+        int n = _samemovies.size();
+        
+        if(n<3)
+            continue;
+
+        double up = 0;;
+        double down[2] = {};
+        
+        for(int movie : _samemovies){
+             double avg = (movieratesum[movie]/movieratecount[movie]);
+             double a = rates[unknownid][movie] - avg;
+             double b = rates[user][movie] - avg;
+             up += a - b;
+             down[0] += a * a;
+             down[1] += b * b;
+        }
+        double result = up / (sqrt(down[0]) * sqrt(down[1]));
+        
+        if(isnan(result))
+            continue;
+
+        pearsonsims.emplace(result,user);
+    }
+    double ust = 0;
+    double alt = 0;
+    int i=0; 
+    for(auto it=pearsonsims.rbegin();/*i<5&&*/it!=pearsonsims.rend();i++,it++){
+        double coeff = it->first;
+        int user = it->second;
+        //if(coeff <= 0.3)
+            //break;
+        if(coeff+1 == 0){
+            continue;
+        }
+        double a = (coeff+1)/2.;//((coeff+1)/2. * (coeff+1)/2.) ;
         ust += a*rates[user][movieid];
         alt += a;
         //cerr << coeff << ' ' << user << ' ' << a << endl;
