@@ -35,7 +35,7 @@ const int testn = 5000;
 vector<pair<int,int>> testcases(testn);
 
 int main(){
-    ios_base::sync_with_stdio(false);cin.tie(nullptr);
+    //ios_base::sync_with_stdio(false);cin.tie(nullptr);
     FILE * trainfile = fopen(TRAIN_FILE,"r");
 
     ll userid,itemid;
@@ -48,6 +48,8 @@ int main(){
         rates[userid][itemid] = rating;
         movieratesum[itemid] += rating;
         ++movieratecount[itemid];
+        userratesum[userid] += rating;
+        ++userratecount[userid];
     }
     cerr << "QQQQQ" << endl;
     fclose(trainfile);
@@ -110,7 +112,7 @@ int main(){
             foundrate = cs;
         }
         else{
-            foundrate = (acs + cs) / 2.;
+            foundrate = (1.3*acs + 0.7*cs) / 2.;
         }
         
         fprintf(submission,"%d,%lf\n",i,foundrate);
@@ -174,7 +176,7 @@ int main(){
             foundrate = cs;
         }
         else{
-            foundrate = (acs + cs) / 2.;
+            foundrate = (1.3*acs + 0.7*cs) / 2.;
         }
         rating = trueratings[i];
         i++;

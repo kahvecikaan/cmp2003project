@@ -17,6 +17,8 @@ vector<unordered_map<int,double>> rates(max_users);
 vector<unordered_map<int,vector<int>>> samemovies(max_users);
 double movieratesum[max_users];//max_movies < max_users
 int movieratecount[max_users];
+double userratesum[max_users];//max_movies < max_users
+int userratecount[max_users];
 set<int> users;
 
 void findsamemovies(vector<int>& _samemovies, int unknownid, int knownid){
@@ -71,15 +73,17 @@ double cossim(int unknownid,int movieid){
             continue;
         if(isnan(rates[u][movieid]))
             cerr << "BBBBBBBB" << endl;
-        ust += rates[it->second][movieid] * w;
-        alt += w;
+        ust += (rates[u][movieid] - (userratesum[u]/userratecount[u])) * w;
+        alt += abs(w);
         //cerr << alt << endl;
+        if(isnan(userratesum[u]/userratecount[u])){
+            cerr << u << ' ' <<  userratesum[u]<< ' ' << userratecount[u] << ' '  << "BAAAAAA" << endl;
+        }
     }
     //ret /= min(100,(int)cossims.size());
     //return ret;
     if(isnan(ust/alt))
         cerr << ust << ' ' << alt << ' '  << "AAAAAAAA" << endl;
-
     if(ust == 0){
         double ret = 0;
         for(auto asda : rates[unknownid]){
@@ -87,8 +91,8 @@ double cossim(int unknownid,int movieid){
         }
         return ret/rates[unknownid].size();
     }
-
-    return ust/alt;
+    //cerr << ust/alt + userratesum[unknownid]/userratecount[unknownid]<< endl;
+    return ust/alt + userratesum[unknownid]/userratecount[unknownid];
 }
 
 double adjustedcossim(int unknownid, int movieid){
@@ -158,14 +162,14 @@ double adjustedcossim(int unknownid, int movieid){
         if(coeff+1 == 0){
             continue;
         }
-        double a = ((coeff+1)/2. * (coeff+1)/2.) ;
-        ust += a*rates[user][movieid];
-        alt += a;
+        double a = (coeff) ;
+        ust += a*(rates[user][movieid] - (userratesum[user] / userratecount[user]));
+        alt += abs(a);
         //cerr << coeff << ' ' << user << ' ' << a << endl;
     } 
-    if(isnan(ust/alt))
+    if(isnan(ust/alt + userratesum[unknownid] / userratecount[unknownid]))
         cerr << ust << ' ' << alt << " AAAAAA" << endl;
-    return ust/alt;
+    return ust/alt + userratesum[unknownid] / userratecount[unknownid];
 }
 
 double pearsonsim(int unknownid, int movieid){
