@@ -1,15 +1,18 @@
 # cmp2003project
 Term project of CMP2003
 
+You need to get train.csv and test.csv from https://www.kaggle.com/competitions/cmp2003-rating-prediction/data. 
+
 ## First task
-
-Use 40p.cpp
-
+```
+g++ -std=c++17 -o a 40p.cpp
+./a
+```
 ## Second task
 
 ### Submission:
-First, you need to get train.csv and test.csv from https://www.kaggle.com/competitions/cmp2003-rating-prediction/data. 
-After that generate Ttrain.csv and Ttest.csv:
+
+Generate Ttrain.csv and Ttest.csv:
 ```
 g++ -std=c++17 -o a transpose.cpp
 ./a
