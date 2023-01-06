@@ -103,7 +103,7 @@ int main(){
 
         if(isnan(cs) && isnan(acs)){
             foundrate = NAN;
-            cerr << "AAAASDAAA" << endl;
+            //cerr << "AAAASDAAA" << endl;
         }
         else if(isnan(cs)){
             foundrate = acs;
@@ -117,8 +117,8 @@ int main(){
         
         fprintf(submission,"%d,%lf\n",i,foundrate);
         i++;
-        if(i/100 - (i-1)/100 != 0)
-            cerr << i << endl;
+        //if(i/100 - (i-1)/100 != 0)
+        //    cerr << i << endl;
     }
     //cerr << n << endl;
     //cout << "RMSE: " << rmse << endl;
