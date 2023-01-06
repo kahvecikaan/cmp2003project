@@ -84,13 +84,6 @@ double cossim(int unknownid,int movieid){
     //return ret;
     //if(isnan(ust/alt))
         //cerr << ust << ' ' << alt << ' '  << "AAAAAAAA" << endl;
-    if(ust == 0){
-        double ret = 0;
-        for(auto asda : rates[unknownid]){
-            ret += asda.second;
-        }
-        return ret/rates[unknownid].size();
-    }
     //cerr << ust/alt + userratesum[unknownid]/userratecount[unknownid]<< endl;
     return ust/alt + userratesum[unknownid]/userratecount[unknownid];
 }
