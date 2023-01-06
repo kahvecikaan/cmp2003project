@@ -112,7 +112,7 @@ int main(){
             foundrate = cs;
         }
         else{
-            foundrate = (1.3*acs + 0.7*cs) / 2.;
+            foundrate = (1*acs + 1*cs) / 2.;
         }
         
         fprintf(submission,"%d,%lf\n",i,foundrate);
