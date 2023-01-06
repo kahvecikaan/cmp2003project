@@ -172,6 +172,7 @@ double adjustedcossim(int unknownid, int movieid){
     return ust/alt + userratesum[unknownid] / userratecount[unknownid];
 }
 
+// Unused
 double pearsonsim(int unknownid, int movieid){
     set<pair<double,int>> pearsonsims;
     for(int user : users){
