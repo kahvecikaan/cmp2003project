@@ -43,12 +43,15 @@ int main(){
     
     sort(useroutput.rbegin(), useroutput.rend());
     sort(movieoutput.rbegin(),movieoutput.rend());
-
+    
+    cout << "User\tRatings" << endl;
     for(int i = 0;i<min(10,(int)useroutput.size());i++){
-        cout << useroutput[i].second << ' ' << useroutput[i].first << endl;
+        cout << useroutput[i].second << '\t' << useroutput[i].first << endl;
     }
     cout << endl;
+
+    cout << "Movie\tRatings" << endl;
     for(int i = 0;i<min(10,(int)movieoutput.size());i++){
-        cout << movieoutput[i].second << ' ' << movieoutput[i].first << endl;
+        cout << movieoutput[i].second << '\t' << movieoutput[i].first << endl;
     }
 }
