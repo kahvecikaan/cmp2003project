@@ -51,7 +51,7 @@ int main(){
         userratesum[userid] += rating;
         ++userratecount[userid];
     }
-    cerr << "QQQQQ" << endl;
+    //cerr << "QQQQQ" << endl;
     fclose(trainfile);
     
     for(int u : users){
@@ -59,7 +59,7 @@ int main(){
         auto en = usertomovies[u].end();
         sort(be,en);
     }
-    cerr << "LLLLLL" << endl;
+    //cerr << "LLLLLL" << endl;
     FILE* testfile = fopen(TEST_FILE,"r");
 
     int n = 0;
@@ -67,7 +67,7 @@ int main(){
     FILE* submission = fopen(SUBMISSION_FILE,"w");
 
 
-#ifdef SUBMISSION
+#if defined(SUBMISSION) || !defined(TEST) 
     int id;
     fprintf(submission,"ID,Predicted\n");
     fscanf(testfile,"%s",asd);
@@ -76,9 +76,9 @@ int main(){
         testcases[n].second = itemid;
         n++;
     }
-    cerr << "KKKKKK"<<endl;
-    cerr << testcases.size() << endl;
-    int haha = 0;
+    //cerr << "KKKKKK"<<endl;
+    //cerr << testcases.size() << endl;
+    //int haha = 0;
     for(auto &t : testcases){
         if(!samemovies[t.first].empty())
             continue;
@@ -88,9 +88,9 @@ int main(){
             //auto en = samemovies[t.first][u].end();
             //sort(be,en);
         }
-        if(haha%1000 == 0)
-            cerr << haha << endl;
-        haha++;
+        //if(haha%1000 == 0)
+        //    cerr << haha << endl;
+        //haha++;
     }
 
     int i=0;
@@ -120,11 +120,8 @@ int main(){
         if(i/100 - (i-1)/100 != 0)
             cerr << i << endl;
     }
-    cerr << n << endl;
-    rmse /= n;
-    rmse = sqrt(rmse);
-
-    cout << "RMSE: " << rmse << endl;
+    //cerr << n << endl;
+    //cout << "RMSE: " << rmse << endl;
      
     fclose(testfile);
     fclose(submission);
@@ -176,7 +173,7 @@ int main(){
             foundrate = cs;
         }
         else{
-            foundrate = (1.3*acs + 0.7*cs) / 2.;
+            foundrate = (1*acs + 1*cs) / 2.;
         }
         rating = trueratings[i];
         i++;
