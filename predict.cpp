@@ -76,8 +76,8 @@ double cossim(int unknownid,int movieid){
         ust += (rates[u][movieid] - (userratesum[u]/userratecount[u])) * w;
         alt += abs(w);
         //cerr << alt << endl;
-        if(isnan(userratesum[u]/userratecount[u])){
-            cerr << u << ' ' <<  userratesum[u]<< ' ' << userratecount[u] << ' '  << "BAAAAAA" << endl;
+        //if(isnan(userratesum[u]/userratecount[u])){
+           // cerr << u << ' ' <<  userratesum[u]<< ' ' << userratecount[u] << ' '  << "BAAAAAA" << endl;
         }
     }
     //ret /= min(100,(int)cossims.size());
@@ -167,8 +167,8 @@ double adjustedcossim(int unknownid, int movieid){
         alt += abs(a);
         //cerr << coeff << ' ' << user << ' ' << a << endl;
     } 
-    if(isnan(ust/alt + userratesum[unknownid] / userratecount[unknownid]))
-        cerr << ust << ' ' << alt << " AAAAAA" << endl;
+    //if(isnan(ust/alt + userratesum[unknownid] / userratecount[unknownid]))
+        //cerr << ust << ' ' << alt << " AAAAAA" << endl;
     return ust/alt + userratesum[unknownid] / userratecount[unknownid];
 }
 
@@ -220,7 +220,7 @@ double pearsonsim(int unknownid, int movieid){
         alt += a;
         //cerr << coeff << ' ' << user << ' ' << a << endl;
     } 
-    if(isnan(ust/alt))
-        cerr << ust << ' ' << alt << " AAAAAA" << endl;
+    //if(isnan(ust/alt))
+        //cerr << ust << ' ' << alt << " AAAAAA" << endl;
     return ust/alt;
 }
